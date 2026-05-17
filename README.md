@@ -32,6 +32,21 @@ Pustakara adalah sistem manajemen perpustakaan berbasis web yang dibangun dengan
 - **Auth**: Laravel Breeze
 
 ---
+## Preview UI Halaman
+- **Login Page**:
+<img width="790" height="469" alt="Screenshot 2026-05-17 100220" src="https://github.com/user-attachments/assets/2f07e316-3465-4287-a6cc-f81b9b8e1175" />
+
+--------------------------------
+
+- **Dashboard Admin**:
+- <img width="833" height="499" alt="image" src="https://github.com/user-attachments/assets/638944da-7395-48c5-a331-264fb09eed30" />
+
+--------------------------------
+
+- **Dashboard User**:
+- <img width="815" height="485" alt="image" src="https://github.com/user-attachments/assets/ddd7c046-7a93-47bb-bb85-5e57a2cf3e13" />
+
+---
 
 ## ⚙️ Cara Install
 
