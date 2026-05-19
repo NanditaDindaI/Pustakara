@@ -1,118 +1,278 @@
 <x-app-layout>
+
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Data Buku
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold text-[#2d1b12]">
+                📚 Data Buku
+            </h2>
+        </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-10 bg-[#f6f1eb] min-h-screen">
+
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
+            {{-- ALERT --}}
             @if(session('success'))
-                <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                <div
+                    class="mb-6 p-4 rounded-2xl bg-green-100 border border-green-200 text-green-700 shadow-sm">
+
                     {{ session('success') }}
+
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            {{-- CARD --}}
+            <div class="bg-white rounded-3xl shadow-md border border-gray-100 p-8">
 
-                <!-- HEADER + BUTTON -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                    <h1 class="text-2xl font-bold">Daftar Buku</h1>
+                {{-- HEADER --}}
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
 
-                    <div style="display: flex; gap: 8px;">
-                        <a href="{{ route('buku.trash') }}"
-                           style="background-color: #7f8c8d; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none;">
-                            🗑️ Trash
-                        </a>
+                    <div>
 
-                        <a href="{{ route('buku.create') }}"
-                           style="background-color: #2980b9; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none;">
-                            + Tambah Buku
-                        </a>
+                        <h1 class="text-3xl font-bold text-[#2d1b12]">
+                            Daftar Buku
+                        </h1>
+
+                        <p class="text-gray-500 mt-1">
+                            Kelola koleksi buku perpustakaan Pustakara.
+                        </p>
+
                     </div>
+
+                    {{-- BUTTONS --}}
+                    <div class="flex items-center gap-3">
+
+                        {{-- TRASH --}}
+                        <a href="{{ route('buku.trash') }}"
+                            class="px-5 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-2xl font-semibold shadow transition duration-300">
+
+                            🗑️ Trash
+
+                        </a>
+
+                        {{-- TAMBAH --}}
+                        <a href="{{ route('buku.create') }}"
+                            class="px-5 py-3 bg-[#5a3422] hover:bg-[#3b2217] text-white rounded-2xl font-semibold shadow transition duration-300">
+
+                            + Tambah Buku
+
+                        </a>
+
+                    </div>
+
                 </div>
 
-                <!-- TABLE -->
-                <table class="w-full border border-gray-200">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="p-3 border">No</th>
-                            <th class="p-3 border">Cover</th>
-                            <th class="p-3 border">Judul</th>
-                            <th class="p-3 border">Pengarang</th>
-                            <th class="p-3 border">Kategori</th>
-                            <th class="p-3 border">Stok Total</th>
-                            <th class="p-3 border">Stok Tersedia</th>
-                            <th class="p-3 border">Aksi</th>
-                        </tr>
-                    </thead>
+                {{-- TABLE --}}
+                <div class="overflow-x-auto rounded-2xl border border-gray-100">
 
-                    <tbody>
-                        @forelse($buku as $item)
+                    <table class="w-full text-sm text-left">
+
+                        {{-- HEAD --}}
+                        <thead
+                            class="bg-gradient-to-r from-[#3b2217] to-[#5a3422] text-white">
+
                             <tr>
-                                <td class="p-3 border text-center">{{ $loop->iteration }}</td>
 
-                                <td class="p-3 border text-center">
-                                    @if($item->cover_image)
-                                        <img src="{{ Storage::url($item->cover_image) }}"
-                                             alt="Cover"
-                                             class="h-16 w-12 object-cover mx-auto rounded">
-                                    @else
-                                        <span class="text-gray-400 text-sm">Tidak ada</span>
-                                    @endif
-                                </td>
+                                <th class="px-6 py-4 font-semibold">
+                                    No
+                                </th>
 
-                                <td class="p-3 border">{{ $item->judul }}</td>
-                                <td class="p-3 border">{{ $item->pengarang }}</td>
-                                <td class="p-3 border">{{ $item->kategori->nama_kategori ?? '-' }}</td>
+                                <th class="px-6 py-4 font-semibold">
+                                    Cover
+                                </th>
 
-                                <td class="p-3 border text-center">{{ $item->stok_total }}</td>
+                                <th class="px-6 py-4 font-semibold">
+                                    Judul
+                                </th>
 
-                                <td class="p-3 border text-center">
-                                    <span style="color: {{ $item->stok_tersedia > 0 ? 'green' : 'red' }}; font-weight: bold;">
-                                        {{ $item->stok_tersedia }}
-                                    </span>
-                                </td>
+                                <th class="px-6 py-4 font-semibold">
+                                    Pengarang
+                                </th>
 
-                                <td class="p-3 border text-center">
+                                <th class="px-6 py-4 font-semibold">
+                                    Kategori
+                                </th>
 
-                                    <a href="{{ route('buku.show', $item->id) }}"
-                                       style="background-color: #2980b9; color: white; padding: 4px 10px; border-radius: 6px; text-decoration: none; margin-right: 4px;">
-                                        Detail
-                                    </a>
+                                <th class="px-6 py-4 font-semibold text-center">
+                                    Total
+                                </th>
 
-                                    <a href="{{ route('buku.edit', $item->id) }}"
-                                       style="background-color: #f39c12; color: white; padding: 4px 10px; border-radius: 6px; text-decoration: none; margin-right: 4px;">
-                                        Edit
-                                    </a>
+                                <th class="px-6 py-4 font-semibold text-center">
+                                    Tersedia
+                                </th>
 
-                                    <form action="{{ route('buku.destroy', $item->id) }}"
-                                          method="POST"
-                                          style="display: inline;">
-                                        @csrf
-                                        @method('DELETE')
+                                <th class="px-6 py-4 font-semibold text-center">
+                                    Aksi
+                                </th>
 
-                                        <button type="submit"
-                                                onclick="return confirm('Yakin hapus buku ini?')"
-                                                style="background-color: #e74c3c; color: white; padding: 4px 10px; border-radius: 6px; border: none; cursor: pointer;">
-                                            Hapus
-                                        </button>
-                                    </form>
-
-                                </td>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="8" class="p-4 text-center text-gray-500">
-                                    Belum ada data buku
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+
+                        </thead>
+
+                        {{-- BODY --}}
+                        <tbody class="divide-y divide-gray-100">
+
+                            @forelse($buku as $item)
+
+                                <tr class="hover:bg-orange-50 transition duration-200">
+
+                                    {{-- NO --}}
+                                    <td class="px-6 py-5 text-gray-500 font-semibold">
+                                        {{ $loop->iteration }}
+                                    </td>
+
+                                    {{-- COVER --}}
+                                    <td class="px-6 py-5">
+
+                                        @if($item->cover_image)
+
+                                            <img src="{{ Storage::url($item->cover_image) }}"
+                                                alt="Cover"
+                                                class="h-20 w-14 object-cover rounded-xl shadow-md">
+
+                                        @else
+
+                                            <div
+                                                class="h-20 w-14 rounded-xl bg-gray-100 flex items-center justify-center text-xs text-gray-400">
+
+                                                No Image
+
+                                            </div>
+
+                                        @endif
+
+                                    </td>
+
+                                    {{-- JUDUL --}}
+                                    <td class="px-6 py-5">
+
+                                        <div class="font-semibold text-[#2d1b12]">
+                                            {{ $item->judul }}
+                                        </div>
+
+                                    </td>
+
+                                    {{-- PENGARANG --}}
+                                    <td class="px-6 py-5 text-gray-600">
+
+                                        {{ $item->pengarang }}
+
+                                    </td>
+
+                                    {{-- KATEGORI --}}
+                                    <td class="px-6 py-5">
+
+                                        <span
+                                            class="inline-flex px-4 py-2 rounded-xl bg-orange-100 text-[#5a3422] font-semibold">
+
+                                            {{ $item->kategori->nama_kategori ?? '-' }}
+
+                                        </span>
+
+                                    </td>
+
+                                    {{-- STOK TOTAL --}}
+                                    <td class="px-6 py-5 text-center font-semibold text-gray-700">
+
+                                        {{ $item->stok_total }}
+
+                                    </td>
+
+                                    {{-- STOK TERSEDIA --}}
+                                    <td class="px-6 py-5 text-center">
+
+                                        @if($item->stok_tersedia > 0)
+
+                                            <span
+                                                class="px-4 py-2 rounded-xl bg-green-100 text-green-700 font-bold">
+
+                                                {{ $item->stok_tersedia }}
+
+                                            </span>
+
+                                        @else
+
+                                            <span
+                                                class="px-4 py-2 rounded-xl bg-red-100 text-red-600 font-bold">
+
+                                                Habis
+
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+                                    {{-- AKSI --}}
+                                    <td class="px-6 py-5">
+
+                                        <div class="flex items-center justify-center gap-2">
+
+                                            {{-- DETAIL --}}
+                                            <a href="{{ route('buku.show', $item->id) }}"
+                                                class="px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-semibold transition">
+
+                                                Detail
+
+                                            </a>
+
+                                            {{-- EDIT --}}
+                                            <a href="{{ route('buku.edit', $item->id) }}"
+                                                class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-white font-semibold transition">
+
+                                                Edit
+
+                                            </a>
+
+                                            {{-- DELETE --}}
+                                            <form action="{{ route('buku.destroy', $item->id) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit"
+                                                    class="px-4 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition">
+
+                                                    Hapus
+
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+
+                                    <td colspan="8"
+                                        class="px-6 py-10 text-center text-gray-500">
+
+                                        Belum ada data buku.
+
+                                    </td>
+
+                                </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
+
         </div>
+
     </div>
+
 </x-app-layout>

@@ -1,72 +1,178 @@
 <x-app-layout>
+
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Data Kategori
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold text-[#2d1b12]">
+                📚 Data Kategori
+            </h2>
+        </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-10 bg-[#f6f1eb] min-h-screen">
+
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
+            {{-- ALERT --}}
             @if(session('success'))
-                <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                <div
+                    class="mb-6 p-4 rounded-2xl bg-green-100 border border-green-200 text-green-700 shadow-sm">
+
                     {{ session('success') }}
+
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            {{-- CARD --}}
+            <div class="bg-white rounded-3xl shadow-md border border-gray-100 p-8">
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                    <h1 class="text-2xl font-bold">Daftar Kategori</h1>
+                {{-- HEADER --}}
+                <div class="flex items-center justify-between mb-8">
+
+                    <div>
+
+                        <h1 class="text-3xl font-bold text-[#2d1b12]">
+                            Daftar Kategori
+                        </h1>
+
+                        <p class="text-gray-500 mt-1">
+                            Kelola kategori buku perpustakaan Pustakara.
+                        </p>
+
+                    </div>
+
+                    {{-- BUTTON --}}
                     <a href="{{ route('kategori.create') }}"
-                       style="background-color: #2980b9; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none;">
+                        class="px-5 py-3 bg-[#5a3422] hover:bg-[#3b2217] text-white rounded-2xl font-semibold shadow transition duration-300">
+
                         + Tambah Kategori
+
                     </a>
+
                 </div>
 
-                <table class="w-full border border-gray-200">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="p-3 border">No</th>
-                            <th class="p-3 border">Nama Kategori</th>
-                            <th class="p-3 border">Deskripsi</th>
-                            <th class="p-3 border">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($kategori as $item)
+                {{-- TABLE --}}
+                <div class="overflow-x-auto rounded-2xl border border-gray-100">
+
+                    <table class="w-full text-sm text-left">
+
+                        {{-- TABLE HEAD --}}
+                        <thead
+                            class="bg-gradient-to-r from-[#3b2217] to-[#5a3422] text-white">
+
                             <tr>
-                                <td class="p-3 border text-center">{{ $loop->iteration }}</td>
-                                <td class="p-3 border">{{ $item->nama_kategori }}</td>
-                                <td class="p-3 border">{{ $item->deskripsi }}</td>
-                                <td class="p-3 border text-center">
-                                    <a href="{{ route('kategori.edit', $item->id) }}"
-                                       style="background-color: #f39c12; color: white; padding: 4px 10px; border-radius: 6px; text-decoration: none; margin-right: 4px;">
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('kategori.destroy', $item->id) }}"
-                                          method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                onclick="return confirm('Yakin hapus kategori ini?')"
-                                                style="background-color: #e74c3c; color: white; padding: 4px 10px; border-radius: 6px; border: none; cursor: pointer;">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                </td>
+
+                                <th class="px-6 py-4 font-semibold w-20">
+                                    No
+                                </th>
+
+                                <th class="px-6 py-4 font-semibold">
+                                    Nama Kategori
+                                </th>
+
+                                <th class="px-6 py-4 font-semibold">
+                                    Deskripsi
+                                </th>
+
+                                <th class="px-6 py-4 font-semibold text-center w-48">
+                                    Aksi
+                                </th>
+
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="p-4 text-center text-gray-500">
-                                    Belum ada data kategori
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+
+                        </thead>
+
+                        {{-- TABLE BODY --}}
+                        <tbody class="divide-y divide-gray-100">
+
+                            @forelse($kategori as $item)
+
+                                <tr class="hover:bg-orange-50 transition duration-200">
+
+                                    {{-- NO --}}
+                                    <td class="px-6 py-5 text-gray-500 font-semibold">
+                                        {{ $loop->iteration }}
+                                    </td>
+
+                                    {{-- NAMA --}}
+                                    <td class="px-6 py-5">
+
+                                        <div
+                                            class="inline-flex px-4 py-2 rounded-xl bg-orange-100 text-[#5a3422] font-semibold">
+
+                                            {{ $item->nama_kategori }}
+
+                                        </div>
+
+                                    </td>
+
+                                    {{-- DESKRIPSI --}}
+                                    <td class="px-6 py-5 text-gray-600 leading-relaxed">
+
+                                        {{ \Illuminate\Support\Str::limit($item->deskripsi, 120) }}
+
+                                    </td>
+
+                                    {{-- AKSI --}}
+                                    <td class="px-6 py-5">
+
+                                        <div class="flex items-center justify-center gap-3">
+
+                                            {{-- EDIT --}}
+                                            <a href="{{ route('kategori.edit', $item->id) }}"
+                                                class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-white font-semibold transition">
+
+                                                Edit
+
+                                            </a>
+
+                                            {{-- DELETE --}}
+                                            <form action="{{ route('kategori.destroy', $item->id) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
+
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit"
+                                                    class="px-4 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition">
+
+                                                    Hapus
+
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+
+                                    <td colspan="4"
+                                        class="px-6 py-10 text-center text-gray-500">
+
+                                        Belum ada data kategori.
+
+                                    </td>
+
+                                </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
+
         </div>
+
     </div>
+
 </x-app-layout>

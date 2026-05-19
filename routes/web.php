@@ -13,9 +13,21 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| HALAMAN AWAL
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
     return view('welcome');
 });
+
+/*
+|--------------------------------------------------------------------------
+| FORCE LOGOUT
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/force-logout', function () {
     Auth::logout();
@@ -25,24 +37,48 @@ Route::get('/force-logout', function () {
     return redirect('/login');
 });
 
+/*
+|--------------------------------------------------------------------------
+| REDIRECT DASHBOARD SESUAI ROLE
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/dashboard', function () {
+
     if (auth()->user()->role === 'administrator') {
         return redirect()->route('admin.dashboard');
     }
 
     return redirect()->route('anggota.dashboard');
+
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// ================= ADMIN =================
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware(['auth', 'role:administrator'])->group(function () {
 
+    // DASHBOARD
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])
         ->name('admin.dashboard');
 
-    // ===== KATEGORI =====
+    /*
+    |--------------------------------------------------------------------------
+    | KATEGORI
+    |--------------------------------------------------------------------------
+    */
+
     Route::resource('/kategori', KategoriController::class);
 
-    // ===== BUKU =====
+    /*
+    |--------------------------------------------------------------------------
+    | BUKU
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/buku/trash', [BukuController::class, 'trash'])
         ->name('buku.trash');
 
@@ -54,7 +90,12 @@ Route::middleware(['auth', 'role:administrator'])->group(function () {
 
     Route::resource('/buku', BukuController::class);
 
-    // ===== DATA ANGGOTA =====
+    /*
+    |--------------------------------------------------------------------------
+    | DATA ANGGOTA
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/data-anggota/trash', [AnggotaController::class, 'trash'])
         ->name('anggota-admin.trash');
 
@@ -70,7 +111,12 @@ Route::middleware(['auth', 'role:administrator'])->group(function () {
             'data-anggota' => 'anggota'
         ]);
 
-    // ===== PEMINJAMAN =====
+    /*
+    |--------------------------------------------------------------------------
+    | PEMINJAMAN
+    |--------------------------------------------------------------------------
+    */
+
     Route::post('/peminjaman/{peminjaman}/kembalikan', [PeminjamanController::class, 'kembalikan'])
         ->name('peminjaman.kembalikan');
 
@@ -82,11 +128,21 @@ Route::middleware(['auth', 'role:administrator'])->group(function () {
 
     Route::resource('/peminjaman', PeminjamanController::class);
 
-    // ===== DENDA =====
+    /*
+    |--------------------------------------------------------------------------
+    | DENDA
+    |--------------------------------------------------------------------------
+    */
+
     Route::resource('/denda', DendaController::class);
 });
 
-// ================= ANGGOTA =================
+/*
+|--------------------------------------------------------------------------
+| ANGGOTA
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware(['auth', 'role:anggota'])
     ->prefix('anggota')
     ->name('anggota.')
@@ -108,7 +164,12 @@ Route::middleware(['auth', 'role:anggota'])
             ->name('riwayat.index');
     });
 
-// ================= PROFILE =================
+/*
+|--------------------------------------------------------------------------
+| PROFILE
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])
@@ -120,5 +181,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 });
+
+/*
+|--------------------------------------------------------------------------
+| AUTH BAWAAN BREEZE
+|--------------------------------------------------------------------------
+*/
 
 require __DIR__.'/auth.php';
